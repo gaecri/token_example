@@ -8,6 +8,8 @@ import { Slider } from "../ui/slider";
 import { Plus, Trash2 } from "lucide-react";
 
 interface ColorToken {
+  id?: string;
+  type: "color";
   name: string;
   value: string;
   description?: string;
@@ -21,8 +23,16 @@ interface ColorTokenEditorProps {
 
 const ColorTokenEditor = ({
   tokens = [
-    { name: "primary", value: "#3b82f6", description: "Primary brand color" },
     {
+      id: "1",
+      type: "color",
+      name: "primary",
+      value: "#3b82f6",
+      description: "Primary brand color",
+    },
+    {
+      id: "2",
+      type: "color",
       name: "secondary",
       value: "#10b981",
       description: "Secondary brand color",
@@ -42,6 +52,8 @@ const ColorTokenEditor = ({
   const addToken = () => {
     if (tokenName && currentColor) {
       const newToken = {
+        id: Math.random().toString(),
+        type: "color" as const,
         name: tokenName,
         value: currentColor,
         description: tokenDescription,

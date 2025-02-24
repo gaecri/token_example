@@ -7,14 +7,26 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
 
+interface Token {
+  id?: string;
+  name: string;
+  value: string | number;
+  type: "color" | "typography" | "spacing";
+  [key: string]: any;
+}
+
 interface TokenEditorProps {
   activeTab?: string;
   onExport?: (format: "css" | "scss" | "json") => void;
+  tokens?: Token[];
+  onTokensChange?: (tokens: Token[]) => void;
 }
 
 const TokenEditor = ({
   activeTab = "colors",
   onExport = () => {},
+  tokens = [],
+  onTokensChange = () => {},
 }: TokenEditorProps) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
 
@@ -55,15 +67,39 @@ const TokenEditor = ({
           </TabsList>
 
           <TabsContent value="colors">
-            <ColorTokenEditor />
+            <ColorTokenEditor
+              tokens={tokens.filter((t) => t.type === "color")}
+              onTokensChange={(newTokens) => {
+                const updatedTokens = tokens
+                  .filter((t) => t.type !== "color")
+                  .concat(newTokens);
+                onTokensChange(updatedTokens);
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="typography">
-            <TypographyTokenEditor />
+            <TypographyTokenEditor
+              tokens={tokens.filter((t) => t.type === "typography")}
+              onTokensChange={(newTokens) => {
+                const updatedTokens = tokens
+                  .filter((t) => t.type !== "typography")
+                  .concat(newTokens);
+                onTokensChange(updatedTokens);
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="spacing">
-            <SpacingTokenEditor />
+            <SpacingTokenEditor
+              tokens={tokens.filter((t) => t.type === "spacing")}
+              onTokensChange={(newTokens) => {
+                const updatedTokens = tokens
+                  .filter((t) => t.type !== "spacing")
+                  .concat(newTokens);
+                onTokensChange(updatedTokens);
+              }}
+            />
           </TabsContent>
         </Tabs>
       </Card>
