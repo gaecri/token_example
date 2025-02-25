@@ -41,8 +41,70 @@ const Home = ({ initialCategory = "colors" }: HomeProps) => {
   };
 
   const handleExport = (format: "css" | "scss" | "json") => {
-    // Placeholder for export functionality
-    console.log(`Exporting in ${format} format`);
+    const exportData = {
+      css: generateCSSExport(tokens),
+      scss: generateSCSSExport(tokens),
+      json: generateJSONExport(tokens),
+    }[format];
+
+    const blob = new Blob([exportData], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `design-tokens.${format}`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
+  const generateCSSExport = (tokens: Token[]) => {
+    const cssVars = tokens
+      .map((token) => {
+        if (token.type === "color") {
+          return `  --${token.name}: ${token.value};`;
+        } else if (token.type === "typography") {
+          return `  --${token.name}-size: ${token.fontSize}px;
+  --${token.name}-weight: ${token.fontWeight};
+  --${token.name}-line-height: ${token.lineHeight};`;
+        } else if (token.type === "spacing") {
+          return `  --${token.name}: ${token.value}${token.unit};`;
+        }
+      })
+      .join("\n");
+
+    return `:root {\n${cssVars}\n}`;
+  };
+
+  const generateSCSSExport = (tokens: Token[]) => {
+    const scssVars = tokens
+      .map((token) => {
+        if (token.type === "color") {
+          return `${token.name}: ${token.value};`;
+        } else if (token.type === "typography") {
+          return `${token.name}: (\n  size: ${token.fontSize}px,\n  weight: ${token.fontWeight},\n  line-height: ${token.lineHeight}\n);`;
+        } else if (token.type === "spacing") {
+          return `${token.name}: ${token.value}${token.unit};`;
+        }
+      })
+      .join("\n\n");
+
+    return scssVars;
+  };
+
+  const generateJSONExport = (tokens: Token[]) => {
+    const tokensByType = tokens.reduce(
+      (acc, token) => {
+        if (!acc[token.type]) {
+          acc[token.type] = [];
+        }
+        acc[token.type].push(token);
+        return acc;
+      },
+      {} as Record<string, Token[]>,
+    );
+
+    return JSON.stringify(tokensByType, null, 2);
   };
 
   return (
