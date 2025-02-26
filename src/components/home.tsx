@@ -108,7 +108,7 @@ const Home = ({ initialCategory = "colors" }: HomeProps) => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-background">
+    <div className="app-container">
       <Sidebar
         activeCategory={activeCategory}
         onCategorySelect={handleCategorySelect}
@@ -122,7 +122,7 @@ const Home = ({ initialCategory = "colors" }: HomeProps) => {
             onTokensChange={handleTokensChange}
           />
         </div>
-        <div className="w-[500px]">
+        <div className="w-500">
           <PreviewPanel tokens={tokens} />
         </div>
       </div>

@@ -1,10 +1,4 @@
 import React, { useState } from "react";
-import { Card } from "../ui/card";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Slider } from "../ui/slider";
 import { Plus, Trash2 } from "lucide-react";
 
 interface ColorToken {
@@ -18,7 +12,6 @@ interface ColorToken {
 interface ColorTokenEditorProps {
   tokens?: ColorToken[];
   onTokensChange?: (tokens: ColorToken[]) => void;
-  isOpen?: boolean;
 }
 
 const ColorTokenEditor = ({
@@ -39,9 +32,7 @@ const ColorTokenEditor = ({
     },
   ],
   onTokensChange = () => {},
-  isOpen = true,
 }: ColorTokenEditorProps) => {
-  const [selectedTab, setSelectedTab] = useState("picker");
   const [currentColor, setCurrentColor] = useState("#000000");
   const [tokenName, setTokenName] = useState("");
   const [tokenDescription, setTokenDescription] = useState("");
@@ -75,136 +66,114 @@ const ColorTokenEditor = ({
   };
 
   return (
-    <div className="p-6 bg-background w-full h-full min-h-[600px]">
-      <h2 className="text-2xl font-bold mb-6">Color Token Editor</h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div>
-          <Tabs
-            defaultValue={selectedTab}
-            onValueChange={setSelectedTab}
-            className="w-full"
-          >
-            <TabsList className="mb-4">
-              <TabsTrigger value="picker">Color Picker</TabsTrigger>
-              <TabsTrigger value="manual">Manual Input</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="picker" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label>Hue</Label>
-                  <Slider
-                    value={[hue]}
-                    max={360}
-                    step={1}
-                    onValueChange={(value) => {
-                      setHue(value[0]);
-                      updateHSL();
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label>Saturation</Label>
-                  <Slider
-                    value={[saturation]}
-                    max={100}
-                    step={1}
-                    onValueChange={(value) => {
-                      setSaturation(value[0]);
-                      updateHSL();
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label>Lightness</Label>
-                  <Slider
-                    value={[lightness]}
-                    max={100}
-                    step={1}
-                    onValueChange={(value) => {
-                      setLightness(value[0]);
-                      updateHSL();
-                    }}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="manual">
-              <div className="space-y-4">
-                <div>
-                  <Label>Color Value</Label>
-                  <Input
-                    type="text"
-                    value={currentColor}
-                    onChange={(e) => setCurrentColor(e.target.value)}
-                    placeholder="#000000 or rgb(0,0,0)"
-                  />
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          <div className="mt-6 space-y-4">
-            <div
-              className="h-24 rounded-md"
-              style={{ backgroundColor: currentColor }}
-            />
-
-            <div className="space-y-4">
-              <div>
-                <Label>Token Name</Label>
-                <Input
-                  value={tokenName}
-                  onChange={(e) => setTokenName(e.target.value)}
-                  placeholder="e.g., primary, secondary"
-                />
-              </div>
-              <div>
-                <Label>Description</Label>
-                <Input
-                  value={tokenDescription}
-                  onChange={(e) => setTokenDescription(e.target.value)}
-                  placeholder="Color token description"
-                />
-              </div>
-              <Button onClick={addToken} className="w-full">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Token
-              </Button>
+    <div className="color-editor">
+      <div className="color-editor__grid">
+        <div className="color-editor__picker">
+          <div
+            className="color-editor__picker-preview"
+            style={{ backgroundColor: currentColor }}
+          />
+          <div className="color-editor__picker-controls">
+            <div className="form-group">
+              <label className="label">Hue</label>
+              <input
+                type="range"
+                className="slider"
+                value={hue}
+                max={360}
+                onChange={(e) => {
+                  setHue(Number(e.target.value));
+                  updateHSL();
+                }}
+              />
             </div>
+
+            <div className="form-group">
+              <label className="label">Saturation</label>
+              <input
+                type="range"
+                className="slider"
+                value={saturation}
+                max={100}
+                onChange={(e) => {
+                  setSaturation(Number(e.target.value));
+                  updateHSL();
+                }}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="label">Lightness</label>
+              <input
+                type="range"
+                className="slider"
+                value={lightness}
+                max={100}
+                onChange={(e) => {
+                  setLightness(Number(e.target.value));
+                  updateHSL();
+                }}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="label">Token Name</label>
+              <input
+                type="text"
+                className="input"
+                value={tokenName}
+                onChange={(e) => setTokenName(e.target.value)}
+                placeholder="e.g., primary, secondary"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="label">Description</label>
+              <input
+                type="text"
+                className="input"
+                value={tokenDescription}
+                onChange={(e) => setTokenDescription(e.target.value)}
+                placeholder="Color token description"
+              />
+            </div>
+
+            <button className="button button--primary" onClick={addToken}>
+              <Plus className="button__icon" />
+              Add Token
+            </button>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold">Color Tokens</h3>
-          {tokens.map((token, index) => (
-            <Card key={index} className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <div className="font-medium">{token.name}</div>
-                  <div className="text-sm text-muted-foreground">
+        <div className="color-editor__tokens">
+          <div className="color-editor__tokens-header">
+            <h3>Color Tokens</h3>
+          </div>
+          <div className="color-editor__tokens-list">
+            {tokens.map((token, index) => (
+              <div key={token.id} className="card color-editor__token">
+                <div className="color-editor__token-info">
+                  <div className="color-editor__token-name">{token.name}</div>
+                  <div className="color-editor__token-description">
                     {token.description}
                   </div>
-                  <div className="text-sm">{token.value}</div>
+                  <div className="color-editor__token-value">{token.value}</div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="color-editor__token-preview">
                   <div
-                    className="w-10 h-10 rounded-md border"
+                    className="color-editor__token-preview-color"
                     style={{ backgroundColor: token.value }}
                   />
-                  <Button
-                    variant="destructive"
-                    size="icon"
+                  <button
+                    className="button button--ghost"
                     onClick={() => removeToken(index)}
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                    <Trash2 className="button__icon" />
+                  </button>
                 </div>
               </div>
-            </Card>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
