@@ -122,7 +122,7 @@ const Home = ({ initialCategory = "colors" }: HomeProps) => {
             onTokensChange={handleTokensChange}
           />
         </div>
-        <div className="w-500">
+        <div className="w-[500px] p-6">
           <PreviewPanel tokens={tokens} />
         </div>
       </div>
