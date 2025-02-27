@@ -81,7 +81,7 @@ const PreviewPanel = ({ tokens = defaultTokens }: PreviewPanelProps) => {
               <div
                 className="p-4 rounded-lg"
                 style={{
-                  backgroundColor: tokens.find((t) => t.name === "secondary")
+                  backgroundColor: tokens.find((t) => t.name === "color-blue-60")
                     ?.value as string,
                   color: "white",
                 }}
