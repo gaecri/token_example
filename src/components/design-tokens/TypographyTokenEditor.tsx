@@ -11,10 +11,11 @@ import {
 } from "../ui/select";
 import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 interface TypographyToken {
   id: string;
+  type: "typography";
   name: string;
   fontFamily: string;
   fontSize: number;
@@ -24,12 +25,13 @@ interface TypographyToken {
 
 interface Props {
   tokens?: TypographyToken[];
-  onAddToken?: (token: TypographyToken) => void;
+  onTokensChange?: (tokens: TypographyToken[]) => void;
 }
 
 const defaultTokens: TypographyToken[] = [
   {
     id: "1",
+    type: "typography",
     name: "Heading 1",
     fontFamily: "Inter",
     fontSize: 32,
@@ -38,6 +40,7 @@ const defaultTokens: TypographyToken[] = [
   },
   {
     id: "2",
+    type: "typography",
     name: "Body",
     fontFamily: "Inter",
     fontSize: 16,
@@ -48,7 +51,7 @@ const defaultTokens: TypographyToken[] = [
 
 const TypographyTokenEditor = ({
   tokens = defaultTokens,
-  onAddToken = () => {},
+  onTokensChange = () => {},
 }: Props) => {
   const [selectedFont, setSelectedFont] = useState("Inter");
   const [fontSize, setFontSize] = useState(16);
@@ -59,14 +62,20 @@ const TypographyTokenEditor = ({
   const handleAddToken = () => {
     const newToken: TypographyToken = {
       id: Math.random().toString(),
+      type: "typography",
       name: tokenName || "New Token",
       fontFamily: selectedFont,
       fontSize,
       fontWeight,
       lineHeight,
     };
-    onAddToken(newToken);
+    onTokensChange([...tokens, newToken]);
     setTokenName("");
+  };
+
+  const removeToken = (index: number) => {
+    const newTokens = tokens.filter((_, i) => i !== index);
+    onTokensChange(newTokens);
   };
 
   return (
@@ -169,7 +178,7 @@ const TypographyTokenEditor = ({
 
         <div className="space-y-4">
           <h3 className="text-xl font-semibold">Existing Tokens</h3>
-          {tokens.map((token) => (
+          {tokens.map((token, index) => (
             <Card key={token.id} className="p-4">
               <div className="flex justify-between items-center">
                 <div>
@@ -189,6 +198,13 @@ const TypographyTokenEditor = ({
                   Aa
                 </div>
               </div>
+              <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => removeToken(index)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
             </Card>
           ))}
         </div>

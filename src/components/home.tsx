@@ -30,6 +30,7 @@ const Home = ({ initialCategory = "colors" }: HomeProps) => {
       lineHeight: 1.2,
     },
     { id: "4", type: "spacing", name: "space-4", value: 16, unit: "px" },
+    { id: "5", type: "spacing", name: "space-8", value: 32, unit: "px" },
   ]);
 
   const handleCategorySelect = (category: string) => {
